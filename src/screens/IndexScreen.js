@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, Button, TouchableOpacity } from 'react-native';
 import { Context } from '../context/BlogContext';
 import { Feather } from '@expo/vector-icons'
@@ -9,7 +9,20 @@ import { Feather } from '@expo/vector-icons'
 // we can destructure it and take just the one we need that is navigation
 const indexScreen = ({ navigation }) => {
     //console.log(props);
-    const { state, deleteBlogPost } = useContext(Context);
+    const { state, deleteBlogPost, getBlogPosts } = useContext(Context);
+
+    useEffect(() => {
+        getBlogPosts();
+        const listener = navigation.addListener('didFocus', () => {
+            getBlogPosts()
+        //we have to clean up the listener when we do not show the component
+        // if we rewturn a function, the function will be invoked when 
+        // the component will not ne shown in the screen
+        return  () => {}
+            listener.remove()
+        })
+    }, [])
+
     return (
                 <View>    
                     <FlatList 
